@@ -1,0 +1,25 @@
+{
+    "name": "si6/base",
+    "description": "SI6 package base.",
+    "require": {
+        "php": ">=7.1",
+        "bensampo/laravel-enum": "^1.0@dev",
+        "illuminate/support": "5.8.*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Reishou",
+            "email": "reishou90@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require-dev": {
+
+    },
+    "autoload": {
+        "psr-4": {
+            "Si6\\Base\\": "src/"
+        }
+    }
+}
