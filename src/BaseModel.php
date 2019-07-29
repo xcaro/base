@@ -21,7 +21,7 @@ abstract class BaseModel extends Model
     {
         return DB::transaction(function () use ($entity) {
             $nextValue = BaseModel::getNextSequence($entity);
-            $id = UniqueIdentity::id($nextValue);
+            $id        = UniqueIdentity::id($nextValue);
             BaseModel::updateSequence($entity);
 
             return $id;
@@ -36,7 +36,17 @@ abstract class BaseModel extends Model
             ->lockForUpdate()
             ->first();
 
-        return $sequent->next_value ?? 1;
+        if (isset($sequent->next_value)) {
+            return $sequent->next_value;
+        }
+
+        DB::table('entity_sequences')
+            ->insert([
+                'entity'     => $entity,
+                'next_value' => 1,
+            ]);
+
+        return 1;
     }
 
     private static function updateSequence($entity)
