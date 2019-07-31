@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\DB;
 
 abstract class BaseModel extends Model
 {
+    public $incrementing = false;
+
     protected static function boot()
     {
         parent::boot();
