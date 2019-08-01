@@ -15,7 +15,7 @@ trait HasCriteria
     public function scopeApplyCriteria(Builder $query, array $param)
     {
         foreach ($param as $field => $value) {
-            if ($value === '') {
+            if (is_null($value)) {
                 continue;
             }
 
@@ -96,5 +96,13 @@ trait HasCriteria
         if (method_exists($this, $method)) {
             $this->{$method}($query, $value);
         }
+    }
+
+    /**
+     * @param  Builder  $query
+     */
+    public function scopeOrderDefault(Builder $query)
+    {
+        $query->orderByDesc($this->getKeyName());
     }
 }
