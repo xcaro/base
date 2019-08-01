@@ -3,11 +3,14 @@
 namespace Si6\Base;
 
 use Illuminate\Database\Eloquent\Model;
+use Si6\Base\Traits\HasCriteria;
 use Si6\Base\Utils\UniqueIdentity;
 use Illuminate\Support\Facades\DB;
 
 abstract class BaseModel extends Model
 {
+    use HasCriteria;
+
     public $incrementing = false;
 
     protected static function boot()

@@ -4,6 +4,7 @@ namespace Si6\Base\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Si6\Base\Traits\Queryable;
 use Si6\Base\Traits\ResponseTrait;
 use Laravel\Lumen\Routing\Controller;
 use Si6\Base\Validators\BaseValidator;
@@ -11,6 +12,7 @@ use Si6\Base\Validators\BaseValidator;
 class BaseController extends Controller
 {
     use ResponseTrait;
+    use Queryable;
 
     protected function validateWith(Request $request, string $make)
     {
