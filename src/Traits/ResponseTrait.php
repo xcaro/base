@@ -3,6 +3,7 @@
 namespace Si6\Base\Traits;
 
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 
 trait ResponseTrait
 {
@@ -37,8 +38,19 @@ trait ResponseTrait
         return $this;
     }
 
+    public function handleMessage($message)
+    {
+        $message = Str::upper($message);
+        $message = str_replace('.', '', $message);
+        $message = str_replace(' ', '_', $message);
+
+        return $message;
+    }
+
     public function addError($key, $message)
     {
+        $message = $this->handleMessage($message);
+
         $error['message'] = $message;
 
         if ($key) {
