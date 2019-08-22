@@ -2,6 +2,7 @@
 
 namespace Si6\Base\Traits;
 
+use Exception;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
@@ -14,6 +15,8 @@ trait ResponseTrait
     protected $statusCode = 200;
 
     protected $errors = [];
+
+    protected $debug = null;
 
     public function setData($data)
     {
@@ -38,12 +41,19 @@ trait ResponseTrait
         return $this;
     }
 
-    public function handleMessage($message)
+    protected function setDebug(Exception $exception)
     {
-        $message = Str::upper($message);
-        $message = str_replace('.', '', $message);
-        $message = str_replace(' ', '_', $message);
+        $this->debug = [
+            'message' => $exception->getMessage(),
+            'code'    => $exception->getCode(),
+            'file'    => $exception->getFile(),
+            'line'    => $exception->getLine(),
+        ];
+    }
 
+    protected function handleMessage($message)
+    {
+        // You can override this function to custom message
         return $message;
     }
 
@@ -61,7 +71,7 @@ trait ResponseTrait
 
         return $this;
     }
-    
+
     public function addErrors($errors)
     {
         foreach ($errors as $key => $value) {
@@ -122,6 +132,10 @@ trait ResponseTrait
             $response['errors'] = $this->errors;
         } else {
             $response['data'] = $this->data;
+        }
+
+        if ($this->debug) {
+            $response['debug'] = $this->debug;
         }
 
         return response()->json($response, $this->statusCode, $this->headers);
