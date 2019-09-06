@@ -1,6 +1,6 @@
 <?php
 
-namespace Si6\Base\Traits;
+namespace Si6\Base\Utils;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;

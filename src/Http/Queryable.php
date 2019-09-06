@@ -1,6 +1,6 @@
 <?php
 
-namespace Si6\Base\Traits;
+namespace Si6\Base\Http;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;

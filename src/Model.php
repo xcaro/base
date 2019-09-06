@@ -2,12 +2,12 @@
 
 namespace Si6\Base;
 
-use Illuminate\Database\Eloquent\Model;
-use Si6\Base\Traits\HasCriteria;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
+use Si6\Base\Utils\HasCriteria;
 use Si6\Base\Utils\UniqueIdentity;
 use Illuminate\Support\Facades\DB;
 
-abstract class BaseModel extends Model
+abstract class Model extends EloquentModel
 {
     use HasCriteria;
 
@@ -18,16 +18,19 @@ abstract class BaseModel extends Model
         parent::boot();
 
         static::creating(function ($model) {
-            $model->{$model->getKeyName()} = self::generateId(static::class);
+            /** @var Model $model */
+            if (!$model->getIncrementing()) {
+                $model->{$model->getKeyName()} = self::generateId($model->getTable());
+            }
         });
     }
 
     public static function generateId($entity)
     {
         return DB::transaction(function () use ($entity) {
-            $nextValue = BaseModel::getNextSequence($entity);
+            $nextValue = Model::getNextSequence($entity);
             $id        = UniqueIdentity::id($nextValue);
-            BaseModel::updateSequence($entity);
+            Model::updateSequence($entity);
 
             return $id;
         });

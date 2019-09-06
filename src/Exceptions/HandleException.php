@@ -7,9 +7,10 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Si6\Base\Exceptions\BaseException;
+use Si6\Base\Http\ResponseTrait;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
-trait ExceptionTrait
+trait HandleException
 {
     use ResponseTrait;
 

@@ -1,14 +1,15 @@
 <?php
 
-namespace Si6\Base\Traits;
+namespace Si6\Base\Http;
 
 use Exception;
 use Illuminate\Http\Response;
-use Illuminate\Support\Str;
 
 trait ResponseTrait
 {
     protected $data = [];
+
+    protected $included = [];
 
     protected $headers = [];
 
@@ -28,6 +29,13 @@ trait ResponseTrait
     public function addData(string $key, $data)
     {
         $this->data[$key] = $data;
+
+        return $this;
+    }
+
+    public function addIncluded(string $key, $data)
+    {
+        $this->included[$key] = $data;
 
         return $this;
     }
@@ -132,6 +140,9 @@ trait ResponseTrait
             $response['errors'] = $this->errors;
         } else {
             $response['data'] = $this->data;
+            if (!empty($this->included)) {
+                $response['included'] = $this->included;
+            }
         }
 
         if ($this->debug) {

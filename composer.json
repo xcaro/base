@@ -1,8 +1,9 @@
 {
-    "name": "si6/base-rest-framework",
+    "name": "si6/base-rest-framework-dev",
     "description": "SI6 package base.",
     "require": {
-        "php": "^7.2"
+        "php": "^7.2",
+        "laravel/framework": "^6.0"
     },
     "license": "MIT",
     "authors": [
@@ -11,7 +12,6 @@
             "email": "reishou90@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "Si6\\Base\\": "src/"
