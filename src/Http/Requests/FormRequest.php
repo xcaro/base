@@ -6,5 +6,17 @@ use Illuminate\Foundation\Http\FormRequest as HttpFormRequest;
 
 abstract class FormRequest extends HttpFormRequest
 {
+    use DataTypeRule;
 
+    protected function ids()
+    {
+        return ['required', 'array'];
+    }
+
+    protected function idsElement()
+    {
+        $rule = ['required'];
+
+        return array_merge($rule, $this->unsignedBigInteger());
+    }
 }
