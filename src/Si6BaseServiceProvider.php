@@ -2,7 +2,9 @@
 
 namespace Si6\Base;
 
+use App\Http\Middleware\Versioning;
 use Illuminate\Contracts\Debug\ExceptionHandler;
+use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use Si6\Base\Exceptions\Handler;
 use Si6\Base\Http\Middleware\BeforeResponse;
@@ -23,6 +25,7 @@ class Si6BaseServiceProvider extends ServiceProvider
 
     public function boot()
     {
-        //
+        $router = app(Router::class);
+        $router->aliasMiddleware('versioning', Versioning::class);
     }
 }
