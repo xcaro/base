@@ -16,7 +16,7 @@ class Versioning
      */
     public function handle(Request $request, Closure $next)
     {
-        $versions = config('version.support');
+        $versions = config('version.support', ['v1']);
         $current = $request->segment(1) ?: '';
 
         if (!in_array($current, $versions, true)) {
