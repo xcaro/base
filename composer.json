@@ -1,5 +1,5 @@
 {
-    "name": "si6/base-rest-framework-dev",
+    "name": "si6/base-rest-framework",
     "description": "SI6 package base.",
     "require": {
         "php": "^7.2",
