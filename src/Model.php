@@ -2,6 +2,7 @@
 
 namespace Si6\Base;
 
+use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Si6\Base\Utils\HasCriteria;
 use Si6\Base\Utils\UniqueIdentity;
@@ -19,7 +20,7 @@ abstract class Model extends EloquentModel
 
         static::creating(function ($model) {
             /** @var Model $model */
-            if (!$model->getIncrementing()) {
+            if (!$model->getIncrementing() && $model->getKeyName()) {
                 $model->{$model->getKeyName()} = self::generateId($model->getTable());
             }
         });
@@ -62,5 +63,10 @@ abstract class Model extends EloquentModel
         DB::table('entity_sequences')
             ->where('entity', $entity)
             ->increment('next_value');
+    }
+
+    protected function serializeDate(DateTimeInterface $date)
+    {
+        return $date->format(DATE_ISO8601);
     }
 }

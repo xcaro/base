@@ -19,6 +19,8 @@ trait ResponseTrait
 
     protected $debug = null;
 
+    protected $dev = null;
+
     public function setData($data)
     {
         $this->data = $data;
@@ -36,6 +38,13 @@ trait ResponseTrait
     public function addIncluded(string $key, $data)
     {
         $this->included[$key] = $data;
+
+        return $this;
+    }
+
+    public function addDevData(string $key, $data)
+    {
+        $this->dev[$key] = $data;
 
         return $this;
     }
@@ -85,6 +94,13 @@ trait ResponseTrait
         foreach ($errors as $key => $value) {
             $this->addError($key, $value);
         }
+
+        return $this;
+    }
+
+    public function setErrors($errors)
+    {
+        $this->errors = $errors;
 
         return $this;
     }
@@ -145,8 +161,13 @@ trait ResponseTrait
             }
         }
 
-        if ($this->debug) {
-            $response['debug'] = $this->debug;
+        if (app()->environment(['local', 'dev'])) {
+            if ($this->debug) {
+                $response['debug'] = $this->debug;
+            }
+            if ($this->dev) {
+                $response['dev'] = $this->dev;
+            }
         }
 
         return response()->json($response, $this->statusCode, $this->headers);

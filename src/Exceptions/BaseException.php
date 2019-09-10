@@ -21,4 +21,9 @@ abstract class BaseException extends Exception
     {
         return $this->statusCode;
     }
+
+    public function setStatusCode($code)
+    {
+        $this->statusCode = $code;
+    }
 }

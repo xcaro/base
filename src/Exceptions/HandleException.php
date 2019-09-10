@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Si6\Base\Exceptions\BaseException;
+use Si6\Base\Exceptions\MicroservicesException;
 use Si6\Base\Http\ResponseTrait;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 
@@ -35,23 +36,15 @@ trait HandleException
     public function handleException($request, Exception $exception)
     {
         if ($exception instanceof ValidationException) {
-            foreach ($exception->errors() as $field => $errors) {
-                foreach ($errors as $error) {
-                    $this->addError($field, $this->handleValidationMessage($error));
-                }
-            }
-            $this->setStatusCode($exception->status);
+            $this->handleValidation($exception);
         }
 
         if ($exception instanceof HttpException) {
-            $this->setStatusCode($exception->getStatusCode())
-                ->addError(null, $this->handleHttpExceptionMessage($exception))
-                ->setHeaders($exception->getHeaders());
+            $this->handleHttp($exception);
         }
 
         if ($exception instanceof BaseException) {
-            $this->setStatusCode($exception->getStatusCode())
-                ->addError(null, $exception->getMessage());
+            $this->handleBase($exception);
         }
 
         if (!$this->errors) {
@@ -59,8 +52,35 @@ trait HandleException
                 ->addError(null, 'INTERNAL_SERVER_ERROR');
         }
 
-        if (app()->environment() !== 'production' && env('APP_DEBUG') == true) {
+        if (app()->environment(['local', 'dev']) && env('APP_DEBUG') == true) {
             $this->setDebug($exception);
         }
+    }
+
+    protected function handleValidation(ValidationException $exception)
+    {
+        foreach ($exception->errors() as $field => $errors) {
+            foreach ($errors as $error) {
+                $this->addError($field, $this->handleValidationMessage($error));
+            }
+        }
+        $this->setStatusCode($exception->status);
+    }
+
+    protected function handleHttp(HttpException $exception)
+    {
+        $this->setStatusCode($exception->getStatusCode())
+            ->addError(null, $this->handleHttpExceptionMessage($exception))
+            ->setHeaders($exception->getHeaders());
+    }
+
+    protected function handleBase(BaseException $exception)
+    {
+        if ($exception instanceof MicroservicesException) {
+            $this->setErrors($exception->errors());
+        } else {
+            $this->addError(null, $exception->getMessage());
+        }
+        $this->setStatusCode($exception->getStatusCode());
     }
 }

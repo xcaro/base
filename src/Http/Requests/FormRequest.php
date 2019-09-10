@@ -19,4 +19,9 @@ abstract class FormRequest extends HttpFormRequest
 
         return array_merge($rule, $this->unsignedBigInteger());
     }
+
+    public function messages()
+    {
+        return require __DIR__ . '/../../../resources/lang/en/validation.php';
+    }
 }

@@ -2,6 +2,8 @@
 
 namespace Si6\Base;
 
+use GuzzleHttp\Client;
+use GuzzleHttp\ClientInterface;
 use Illuminate\Contracts\Debug\ExceptionHandler;
 use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Routing\Router;
@@ -17,10 +19,14 @@ class Si6BaseServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton(ExceptionHandler::class, Handler::class);
+        $this->app->bind(ClientInterface::class, function ($app, $options) {
+            return new Client($options);
+        });
         $kernel = $this->app->make(Kernel::class);
         $kernel->prependMiddleware(Unsupported::class);
         $kernel->prependMiddleware(Unacceptable::class);
         $kernel->prependMiddleware(BeforeResponse::class);
+        $this->mergeConfigFrom(__DIR__ . '/../config/microservices.php', 'microservices');
     }
 
     public function boot()
