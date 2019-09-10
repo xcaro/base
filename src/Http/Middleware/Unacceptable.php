@@ -8,6 +8,8 @@ use Si6\Base\Exceptions\UnacceptableException;
 
 class Unacceptable
 {
+    use ExceptMiddleware;
+
     /**
      * @param  Request  $request
      * @param  Closure  $next
@@ -17,6 +19,10 @@ class Unacceptable
     public function handle($request, Closure $next)
     {
         $accept = $request->headers->get('accept');
+
+        if ($this->inExceptArray($request)) {
+            return $next($request);
+        }
 
         if ($accept && stripos($accept, 'json') === false) {
             throw new UnacceptableException;
