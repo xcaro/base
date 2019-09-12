@@ -66,31 +66,80 @@ abstract class Microservices
 
     abstract protected function getHost();
 
+    /**
+     * @param $url
+     * @param  array  $data
+     * @param  array  $options
+     * @return mixed|null
+     * @throws GuzzleException
+     * @throws MicroservicesException
+     */
     protected function get($url, $data = [], $options = [])
     {
         return $this->query('GET', $url, $data, $options);
     }
 
+    /**
+     * @param $url
+     * @param  array  $data
+     * @param  array  $options
+     * @return mixed|null
+     * @throws GuzzleException
+     * @throws MicroservicesException
+     */
     protected function post($url, $data = [], $options = [])
     {
         return $this->json('POST', $url, $data, $options);
     }
 
+    /**
+     * @param $url
+     * @param  array  $data
+     * @param  array  $options
+     * @return mixed|null
+     * @throws GuzzleException
+     * @throws MicroservicesException
+     */
     protected function put($url, $data = [], $options = [])
     {
         return $this->json('PUT', $url, $data, $options);
     }
 
+    /**
+     * @param $url
+     * @param  array  $data
+     * @param  array  $options
+     * @return mixed|null
+     * @throws GuzzleException
+     * @throws MicroservicesException
+     */
     protected function patch($url, $data = [], $options = [])
     {
         return $this->json('PATCH', $url, $data, $options);
     }
 
+    /**
+     * @param $url
+     * @param  array  $data
+     * @param  array  $options
+     * @return mixed|null
+     * @throws GuzzleException
+     * @throws MicroservicesException
+     */
     protected function delete($url, $data = [], $options = [])
     {
         return $this->query('DELETE', $url, $data, $options);
     }
 
+    /**
+     * @param $method
+     * @param $url
+     * @param $data
+     * @param $options
+     * @return mixed|null
+     * @throws GuzzleException
+     * @throws MicroservicesException
+     */
     protected function query($method, $url, $data, $options)
     {
         $options = array_merge($options, ['query' => $data]);
@@ -98,6 +147,15 @@ abstract class Microservices
         return $this->request($method, $url, $data ? $options : []);
     }
 
+    /**
+     * @param $method
+     * @param $url
+     * @param $data
+     * @param $options
+     * @return mixed|null
+     * @throws GuzzleException
+     * @throws MicroservicesException
+     */
     protected function json($method, $url, $data, $options)
     {
         $options = array_merge($options, ['json' => $data]);
@@ -109,17 +167,17 @@ abstract class Microservices
      * @param $method
      * @param $url
      * @param $options
-     * @return Exception|RequestException|ResponseInterface|null
-     * @throws MicroservicesException
+     * @return mixed|null
      * @throws GuzzleException
+     * @throws MicroservicesException
      */
     protected function request($method, $url, $options)
     {
         try {
-            $url = $this->prepareUrl($url);
+            $url     = $this->prepareUrl($url);
+            $options = array_merge($this->options, $options);
 
             $response = $this->client->request($method, $url, $options);
-
             if ($response->getStatusCode() !== Response::HTTP_OK) {
                 $this->syncException($response);
             }
@@ -148,7 +206,7 @@ abstract class Microservices
         }
 
         $statusCode = $response->getStatusCode();
-        $data = json_decode($response->getBody()->getContents());
+        $data       = json_decode($response->getBody()->getContents());
 
         throw new MicroservicesException($data, $statusCode);
     }

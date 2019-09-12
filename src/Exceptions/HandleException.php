@@ -3,6 +3,7 @@
 namespace Si6\Base\Traits;
 
 use Exception;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -46,6 +47,10 @@ trait HandleException
         if ($exception instanceof BaseException) {
             $this->handleBase($exception);
         }
+        
+        if ($exception instanceof AuthenticationException) {
+            $this->handleAuth($exception);
+        }
 
         if (!$this->errors) {
             $this->setStatusCode(Response::HTTP_INTERNAL_SERVER_ERROR)
@@ -82,5 +87,11 @@ trait HandleException
             $this->addError(null, $exception->getMessage());
         }
         $this->setStatusCode($exception->getStatusCode());
+    }
+
+    protected function handleAuth(AuthenticationException $exception)
+    {
+        $this->setStatusCode(Response::HTTP_UNAUTHORIZED)
+            ->addError(null, 'UNAUTHENTICATED');
     }
 }
