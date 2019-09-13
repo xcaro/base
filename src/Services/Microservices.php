@@ -13,8 +13,6 @@ use Symfony\Component\HttpFoundation\Response;
 
 abstract class Microservices
 {
-    protected static $instance = null;
-
     /** @var ClientInterface $client */
     protected $client;
 
@@ -46,15 +44,6 @@ abstract class Microservices
             'Content-type' => 'application/json',
             'Accept'       => 'application/json',
         ];
-    }
-
-    public static function getInstance()
-    {
-        if (static::$instance === null) {
-            static::$instance = new static();
-        }
-
-        return static::$instance;
     }
 
     protected function baseUri()
