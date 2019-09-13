@@ -9,6 +9,8 @@ use Si6\Base\User;
 
 class AuthService extends Microservices
 {
+    use SingletonInstance;
+
     protected function getHost()
     {
         return config('microservices.host.auth');
