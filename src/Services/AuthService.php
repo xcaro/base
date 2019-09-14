@@ -17,24 +17,27 @@ class AuthService extends Microservices
     }
 
     /**
-     * @param  Request  $request
      * @return User
      * @throws GuzzleException
      * @throws MicroservicesException
      */
-    public function authenticate(Request $request)
+    public function authenticate()
     {
-        $response = $this->post('authentication', [], [
-            'headers' => [
-                'Authorization' => $request->headers->get('Authorization'),
-                'Content-type'  => 'application/json',
-                'Accept'        => 'application/json',
-            ],
-        ]);
+        $response = $this->syncAuthorization()->post('authentication');
 
         $user = new User();
-        $user->fill((array)$response->data);
+        $user->fill((array)($response->data ?? []));
 
         return $user;
+    }
+
+    /**
+     * @param $userId
+     * @throws GuzzleException
+     * @throws MicroservicesException
+     */
+    public function validateUserId($userId)
+    {
+        $this->get('users/validation');
     }
 }

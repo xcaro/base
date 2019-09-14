@@ -55,6 +55,13 @@ abstract class Microservices
 
     abstract protected function getHost();
 
+    public function syncAuthorization()
+    {
+        $this->options['headers']['Authorization'] = request()->header('Authorization');
+
+        return $this;
+    }
+
     /**
      * @param $url
      * @param  array  $data
@@ -133,7 +140,7 @@ abstract class Microservices
     {
         $options = array_merge($options, ['query' => $data]);
 
-        return $this->request($method, $url, $data ? $options : []);
+        return $this->request($method, $url, $options);
     }
 
     /**
@@ -219,5 +226,7 @@ abstract class Microservices
     public function disableSyncException()
     {
         $this->syncException = false;
+
+        return $this;
     }
 }

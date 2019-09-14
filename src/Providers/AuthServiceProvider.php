@@ -12,12 +12,10 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         Auth::extend('access_token', function () {
-            $request = app('request');
-
             /** @var AuthService $authService */
-            $authService = app(AuthService::class);
+            $authService = app(AuthService::class)->getInstance();
 
-            $user = $authService->authenticate($request);
+            $user = $authService->authenticate();
 
             return new AccessTokenGuard($user);
         });
