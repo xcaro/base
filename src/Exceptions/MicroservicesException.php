@@ -8,11 +8,12 @@ class MicroservicesException extends BaseException
 
     protected $dataResponse;
 
-    public function __construct($data, $statusCode)
+    public function __construct($data, $statusCode = null, $message = '')
     {
         parent::__construct();
-        $this->statusCode = $statusCode;
+        $this->statusCode   = $statusCode ?: $this->statusCode;
         $this->dataResponse = $data;
+        $this->message      = $message ?: $this->message;
     }
 
     public function errors()

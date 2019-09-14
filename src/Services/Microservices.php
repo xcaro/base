@@ -175,15 +175,13 @@ abstract class Microservices
 
             $response = $this->client->request($method, $url, $options);
             if ($response->getStatusCode() !== Response::HTTP_OK) {
-                $this->syncException($response);
+                $data = json_decode($response->getBody()->getContents());
+                throw new MicroservicesException($data, $response->getStatusCode());
             }
 
             $data = json_decode($response->getBody()->getContents());
         } catch (RequestException $exception) {
-            if ($exception->hasResponse()) {
-                $response = $exception->getResponse();
-                $this->syncException($response);
-            }
+            $this->syncException($exception);
             // TODO: write log disableSyncException case
             $data = null;
         }
@@ -192,19 +190,26 @@ abstract class Microservices
     }
 
     /**
-     * @param  ResponseInterface  $response
+     * @param  RequestException  $exception
      * @throws MicroservicesException
      */
-    protected function syncException(ResponseInterface $response)
+    protected function syncException(RequestException $exception)
     {
         if (!$this->syncException) {
             return;
         }
 
-        $statusCode = $response->getStatusCode();
-        $data       = json_decode($response->getBody()->getContents());
+        $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR;
+        $message    = $exception->getMessage();
+        $data       = null;
 
-        throw new MicroservicesException($data, $statusCode);
+        if ($exception->hasResponse()) {
+            $response   = $exception->getResponse();
+            $statusCode = $response->getStatusCode();
+            $data       = json_decode($response->getBody()->getContents());
+        }
+
+        throw new MicroservicesException($data, $statusCode, $message);
     }
 
     protected function prepareUrl($url)
