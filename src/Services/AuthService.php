@@ -38,6 +38,6 @@ class AuthService extends Microservices
      */
     public function validateUserId($userId)
     {
-        $this->get('users/validation');
+        $this->get('users/validation', ['user_id' => $userId]);
     }
 }
