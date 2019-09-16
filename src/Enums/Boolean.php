@@ -9,5 +9,5 @@ namespace Si6\Base\Enums;
 class Boolean extends Enum
 {
     const FALSE = 0;
-    const TRUE  = 0;
+    const TRUE  = 1;
 }
