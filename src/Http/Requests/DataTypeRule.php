@@ -102,4 +102,9 @@ trait DataTypeRule
 
         return ['numeric', "max:$max", "min:$min", "size:$total"];
     }
+
+    protected function double()
+    {
+        return ['numeric', 'max:' . PHP_FLOAT_MAX, 'min:' . PHP_FLOAT_MIN];
+    }
 }

@@ -4,6 +4,7 @@ namespace Si6\Base;
 
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
+use Illuminate\Support\Facades\Auth;
 use Si6\Base\Utils\HasCriteria;
 use Si6\Base\Utils\UniqueIdentity;
 use Illuminate\Support\Facades\DB;
@@ -14,6 +15,14 @@ abstract class Model extends EloquentModel
 
     public $incrementing = false;
 
+    public $createdBy = false;
+
+    public $updatedBy = false;
+
+    const CREATED_BY = 'created_by';
+
+    const UPDATED_BY = 'updated_by';
+
     protected static function boot()
     {
         parent::boot();
@@ -23,7 +32,23 @@ abstract class Model extends EloquentModel
             if (!$model->getIncrementing() && $model->getKeyName()) {
                 $model->{$model->getKeyName()} = self::generateId($model->getTable());
             }
+            if ($model->createdBy) {
+                $model->{$model->getCreatedByColumn()} = Auth::id();
+            }
+            if ($model->updatedBy) {
+                $model->{$model->getUpdatedByColumn()} = Auth::id();
+            }
         });
+    }
+
+    protected function getCreatedByColumn()
+    {
+        return self::CREATED_BY;
+    }
+
+    protected function getUpdatedByColumn()
+    {
+        return self::UPDATED_BY;
     }
 
     public static function generateId($entity)

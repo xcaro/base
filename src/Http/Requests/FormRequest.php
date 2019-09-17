@@ -10,9 +10,12 @@ abstract class FormRequest extends HttpFormRequest
 
     protected $required = false;
 
+    protected $nullable = true;
+
     protected function notRequire()
     {
         $this->required = false;
+        $this->nullable();
 
         return $this;
     }
@@ -20,6 +23,21 @@ abstract class FormRequest extends HttpFormRequest
     protected function require()
     {
         $this->required = true;
+        $this->notNull();
+
+        return $this;
+    }
+
+    protected function nullable()
+    {
+        $this->nullable = true;
+
+        return $this;
+    }
+
+    protected function notNull()
+    {
+        $this->nullable = false;
 
         return $this;
     }
@@ -33,7 +51,10 @@ abstract class FormRequest extends HttpFormRequest
 
     protected function rule()
     {
-        $rule = $this->required ? ['required'] : [];
+        $required = $this->required ? ['required'] : [];
+        $nullable = $this->nullable ? ['nullable'] : [];
+
+        $rule = array_merge($required, $nullable);
         $this->resetRequire();
 
         return $rule;

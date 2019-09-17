@@ -19,7 +19,7 @@ trait HandleException
     protected function handleValidationMessage($message)
     {
         $message = Str::upper($message);
-        $message = str_replace('.', '', $message);
+        $message = rtrim($message, '.');
         $message = str_replace(' ', '_', $message);
 
         return $message;
