@@ -84,7 +84,12 @@ trait HandleException
         if ($exception instanceof MicroservicesException) {
             $this->setErrors($exception->errors());
         } else {
-            $this->addError(null, $exception->getMessage());
+            $field = null;
+            if ($exception->getStatusCode() === Response::HTTP_UNPROCESSABLE_ENTITY) {
+                $field = $exception->getField();
+            }
+
+            $this->addError($field, $exception->getMessage());
         }
         $this->setStatusCode($exception->getStatusCode());
     }
