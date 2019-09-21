@@ -32,6 +32,7 @@ class Si6BaseServiceProvider extends ServiceProvider
         $this->registerGlobalMiddleware();
         $this->registerMicroservicesDependence();
         $this->registerAuthProvider();
+        $this->registerLogProvider();
     }
 
     /**
@@ -63,6 +64,11 @@ class Si6BaseServiceProvider extends ServiceProvider
     {
         $this->mergeConfigFrom(__DIR__ . '/../../config/auth.php', 'auth');
         $this->app->register(AuthServiceProvider::class);
+    }
+
+    protected function registerLogProvider()
+    {
+        $this->mergeConfigFrom(__DIR__ . '/../../config/logging.php', 'logging');
     }
 
     /**
