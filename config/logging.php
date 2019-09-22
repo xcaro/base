@@ -39,7 +39,7 @@ return [
     'channels' => [
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['elasticsearch'],
+            'channels' => ['daily'],
             'ignore_exceptions' => false,
         ],
 
@@ -104,7 +104,7 @@ return [
             'handler' => ElasticsearchHandler::class,
             'handler_with' => [
                 'client' => ClientBuilder::create()
-                    ->setHosts(explode(',', env('ELASTIC_SEARCH_URL', 'localhost:9200')))
+                    ->setHosts(explode(',', env('ELASTIC_SEARCH_URL', 'https://localhost:9200')))
                     ->setSSLVerification(false)
                     ->build(),
                 'options' => [],
