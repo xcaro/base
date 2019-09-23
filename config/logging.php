@@ -2,9 +2,7 @@
 
 use Monolog\Handler\StreamHandler;
 use Monolog\Handler\SyslogUdpHandler;
-use Monolog\Handler\ElasticsearchHandler;
-use Monolog\Formatter\ElasticsearchFormatter;
-use Elasticsearch\ClientBuilder;
+use Si6\Base\Logging\ElasticsearchLogger;
 
 return [
 
@@ -100,20 +98,14 @@ return [
         ],
 
         'elasticsearch' => [
-            'driver' => 'monolog',
-            'handler' => ElasticsearchHandler::class,
-            'handler_with' => [
-                'client' => ClientBuilder::create()
-                    ->setHosts(explode(',', env('ELASTIC_SEARCH_URL', 'https://localhost:9200')))
-                    ->setSSLVerification(false)
-                    ->build(),
-                'options' => [],
-            ],
-            'formatter' => ElasticsearchFormatter::class,
-            'formatter_with' => [
-                'index' => env('APP_NAME', 'k250_base'),
-                'type' => 'error'
-            ]
+            'driver' => 'custom',
+            'via' => ElasticsearchLogger::class,
+            'name' => 'default',
+            'hosts' => explode(',', env('ELASTIC_SEARCH_URL', 'https://localhost:9200')),
+            'ssl_verification' => false,
+            'options' => [],
+            'index' => env('APP_NAME', 'k250_base'),
+            'type' => 'error'
         ],
     ],
 
