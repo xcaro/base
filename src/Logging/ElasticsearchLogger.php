@@ -11,8 +11,6 @@ class ElasticsearchLogger
 {
     public function __invoke(array $config)
     {
-        dd('test');
-
         $elasticsearchClient = ClientBuilder::create()
             ->setHosts($config['hosts'])
             ->setSSLVerification($config['ssl_verification'])
