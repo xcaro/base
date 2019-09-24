@@ -8,7 +8,8 @@
         "laravel/tinker": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
         "bensampo/laravel-enum": "^1.26",
-        "elasticsearch/elasticsearch": "^7.2"
+        "elasticsearch/elasticsearch": "^7.2",
+        "aws/aws-sdk-php": "^3.112"
     },
     "license": "MIT",
     "authors": [
