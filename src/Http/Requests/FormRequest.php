@@ -10,6 +10,8 @@ abstract class FormRequest extends HttpFormRequest
 
     protected $required = false;
 
+    protected $requiredWith = [];
+
     protected $nullable = true;
 
     protected function notRequire()
@@ -24,6 +26,13 @@ abstract class FormRequest extends HttpFormRequest
     {
         $this->required = true;
         $this->notNull();
+
+        return $this;
+    }
+
+    protected function requireWith($field)
+    {
+        $this->requiredWith = ["required_with:$field"];
 
         return $this;
     }
@@ -45,16 +54,18 @@ abstract class FormRequest extends HttpFormRequest
     protected function resetRequire()
     {
         $this->notRequire();
+        $this->requiredWith = [];
 
         return $this;
     }
 
     protected function rule()
     {
-        $required = $this->required ? ['required'] : [];
-        $nullable = $this->nullable ? ['nullable'] : [];
+        $required     = $this->required ? ['required'] : [];
+        $requiredWith = $this->requiredWith ?: [];
+        $nullable     = $this->nullable ? ['nullable'] : [];
 
-        $rule = array_merge($required, $nullable);
+        $rule = array_merge($required, $requiredWith, $nullable);
         $this->resetRequire();
 
         return $rule;
