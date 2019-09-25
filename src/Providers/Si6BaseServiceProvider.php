@@ -12,6 +12,7 @@ use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use Si6\Base\Exceptions\Handler;
 use Si6\Base\Http\Middleware\Authenticate;
+use Si6\Base\Http\Middleware\Authorize;
 use Si6\Base\Http\Middleware\BeforeResponse;
 use Si6\Base\Http\Middleware\CheckForMaintenanceMode;
 use Si6\Base\Http\Middleware\TrimStrings;
@@ -79,5 +80,6 @@ class Si6BaseServiceProvider extends ServiceProvider
         $router = $this->app->make(Router::class);
         $router->aliasMiddleware('versioning', Versioning::class);
         $router->aliasMiddleware('auth', Authenticate::class);
+        $router->aliasMiddleware('authorize', Authorize::class);
     }
 }

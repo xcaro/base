@@ -17,9 +17,16 @@ class User extends Model implements AuthenticatableContract
         'name',
         'email',
         'status',
+        'roles',
+        'permissions',
         'last_login_at',
         'deleted_at',
         'created_at',
         'updated_at',
     ];
+
+    public function permissions()
+    {
+        return $this->permissions ?? [];
+    }
 }
