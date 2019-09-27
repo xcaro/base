@@ -3,7 +3,6 @@
 namespace Si6\Base\Services;
 
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Http\Request;
 use Si6\Base\Exceptions\MicroservicesException;
 use Si6\Base\User;
 
