@@ -4,7 +4,6 @@ namespace Si6\Base\Services;
 
 use GuzzleHttp\Exception\GuzzleException;
 use Si6\Base\Exceptions\MicroservicesException;
-use Si6\Base\User;
 
 class AuthService extends Microservices
 {
@@ -16,18 +15,16 @@ class AuthService extends Microservices
     }
 
     /**
-     * @return User
+     * @param  array  $param
+     * @return mixed|null
      * @throws GuzzleException
      * @throws MicroservicesException
      */
-    public function authenticate()
+    public function getUsers(array $param)
     {
-        $response = $this->syncAuthorization()->post('authentication');
+        $response = $this->get('users', $param);
 
-        $user = new User();
-        $user->fill((array)($response->data ?? []));
-
-        return $user;
+        return $response->data ?? [];
     }
 
     /**

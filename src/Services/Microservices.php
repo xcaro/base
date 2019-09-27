@@ -170,7 +170,8 @@ abstract class Microservices
     protected function request($method, $url, $options)
     {
         try {
-            $url     = $this->prepareUrl($url);
+            $url = $this->prepareUrl($url);
+            $this->syncAuthorization();
             $options = array_merge($this->options, $options);
 
             $response = $this->client->request($method, $url, $options);

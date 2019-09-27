@@ -22,4 +22,17 @@ class BaseController extends Controller
     {
         return DB::transaction($callback);
     }
+
+    protected function mapWithKeys($objects)
+    {
+        if (!$objects) {
+            return [];
+        }
+
+        $objects = collect($objects)->mapWithKeys(function ($object) {
+            return [$object->id => $object];
+        });
+
+        return $objects;
+    }
 }

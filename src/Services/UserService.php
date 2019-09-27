@@ -22,7 +22,7 @@ class UserService extends Microservices
      */
     public function detail($id)
     {
-        $response = $this->syncAuthorization()->get('users/' . $id);
+        $response = $this->get('users/' . $id);
 
         return $response->data ?? null;
     }
@@ -35,6 +35,19 @@ class UserService extends Microservices
      */
     public function updateBalance($id, array $param)
     {
-        $this->syncAuthorization()->put("users/$id/balance", $param);
+        $this->put("users/$id/balance", $param);
+    }
+
+    /**
+     * @param  array  $param
+     * @return mixed|null
+     * @throws GuzzleException
+     * @throws MicroservicesException
+     */
+    public function getProfiles(array $param)
+    {
+        $response = $this->get('profiles', $param);
+
+        return $response->data ?? null;
     }
 }
