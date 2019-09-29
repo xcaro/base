@@ -1,14 +1,15 @@
 <?php
 
-namespace Si6\Base\Traits;
+namespace Si6\Base\Http;
 
 use Exception;
 use Illuminate\Http\Response;
-use Illuminate\Support\Str;
 
 trait ResponseTrait
 {
     protected $data = [];
+
+    protected $included = [];
 
     protected $headers = [];
 
@@ -17,6 +18,8 @@ trait ResponseTrait
     protected $errors = [];
 
     protected $debug = null;
+
+    protected $dev = null;
 
     public function setData($data)
     {
@@ -28,6 +31,20 @@ trait ResponseTrait
     public function addData(string $key, $data)
     {
         $this->data[$key] = $data;
+
+        return $this;
+    }
+
+    public function addIncluded(string $key, $data)
+    {
+        $this->included[$key] = $data;
+
+        return $this;
+    }
+
+    public function addDevData(string $key, $data)
+    {
+        $this->dev[$key] = $data;
 
         return $this;
     }
@@ -48,6 +65,7 @@ trait ResponseTrait
             'code'    => $exception->getCode(),
             'file'    => $exception->getFile(),
             'line'    => $exception->getLine(),
+            'trace'   => $exception->getTraceAsString(),
         ];
     }
 
@@ -77,6 +95,13 @@ trait ResponseTrait
         foreach ($errors as $key => $value) {
             $this->addError($key, $value);
         }
+
+        return $this;
+    }
+
+    public function setErrors($errors)
+    {
+        $this->errors = $errors;
 
         return $this;
     }
@@ -132,10 +157,18 @@ trait ResponseTrait
             $response['errors'] = $this->errors;
         } else {
             $response['data'] = $this->data;
+            if (!empty($this->included)) {
+                $response['included'] = $this->included;
+            }
         }
 
-        if ($this->debug) {
-            $response['debug'] = $this->debug;
+        if (app()->environment(['local', 'dev'])) {
+            if ($this->debug) {
+                $response['debug'] = $this->debug;
+            }
+            if ($this->dev) {
+                $response['dev'] = $this->dev;
+            }
         }
 
         return response()->json($response, $this->statusCode, $this->headers);

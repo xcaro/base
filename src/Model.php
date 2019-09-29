@@ -2,32 +2,61 @@
 
 namespace Si6\Base;
 
-use Illuminate\Database\Eloquent\Model;
-use Si6\Base\Traits\HasCriteria;
+use DateTimeInterface;
+use Illuminate\Database\Eloquent\Model as EloquentModel;
+use Illuminate\Support\Facades\Auth;
+use Si6\Base\Utils\HasCriteria;
 use Si6\Base\Utils\UniqueIdentity;
 use Illuminate\Support\Facades\DB;
 
-abstract class BaseModel extends Model
+abstract class Model extends EloquentModel
 {
     use HasCriteria;
 
     public $incrementing = false;
+
+    public $createdBy = false;
+
+    public $updatedBy = false;
+
+    const CREATED_BY = 'created_by';
+
+    const UPDATED_BY = 'updated_by';
 
     protected static function boot()
     {
         parent::boot();
 
         static::creating(function ($model) {
-            $model->{$model->getKeyName()} = self::generateId(static::class);
+            /** @var Model $model */
+            if (!$model->getIncrementing() && $model->getKeyName()) {
+                $model->{$model->getKeyName()} = self::generateId($model->getTable());
+            }
+            if ($model->createdBy) {
+                $model->{$model->getCreatedByColumn()} = Auth::id();
+            }
+            if ($model->updatedBy) {
+                $model->{$model->getUpdatedByColumn()} = Auth::id();
+            }
         });
+    }
+
+    protected function getCreatedByColumn()
+    {
+        return self::CREATED_BY;
+    }
+
+    protected function getUpdatedByColumn()
+    {
+        return self::UPDATED_BY;
     }
 
     public static function generateId($entity)
     {
         return DB::transaction(function () use ($entity) {
-            $nextValue = BaseModel::getNextSequence($entity);
+            $nextValue = Model::getNextSequence($entity);
             $id        = UniqueIdentity::id($nextValue);
-            BaseModel::updateSequence($entity);
+            Model::updateSequence($entity);
 
             return $id;
         });
@@ -59,5 +88,10 @@ abstract class BaseModel extends Model
         DB::table('entity_sequences')
             ->where('entity', $entity)
             ->increment('next_value');
+    }
+
+    protected function serializeDate(DateTimeInterface $date)
+    {
+        return $date->format(DATE_ISO8601);
     }
 }

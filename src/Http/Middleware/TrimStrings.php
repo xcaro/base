@@ -2,30 +2,16 @@
 
 namespace Si6\Base\Http\Middleware;
 
-class TrimStrings extends TransformsRequest
+use Illuminate\Foundation\Http\Middleware\TrimStrings as Middleware;
+
+class TrimStrings extends Middleware
 {
     /**
-     * The attributes that should not be trimmed.
+     * The names of the attributes that should not be trimmed.
      *
      * @var array
      */
     protected $except = [
         //
     ];
-
-    /**
-     * Transform the given value.
-     *
-     * @param  string  $key
-     * @param  mixed   $value
-     * @return mixed
-     */
-    protected function transform($key, $value)
-    {
-        if (in_array($key, $this->except, true)) {
-            return $value;
-        }
-
-        return is_string($value) ? trim($value) : $value;
-    }
 }

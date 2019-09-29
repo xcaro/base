@@ -1,6 +1,6 @@
 <?php
 
-namespace Si6\Base\Traits;
+namespace Si6\Base\Http;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -12,11 +12,11 @@ trait Queryable
 
     protected $maxLimit = 100;
 
-    public function query(Request $request, array $keys)
+    public function query(array $keys)
     {
         $results = [];
 
-        $input = $request->query();
+        $input = request()->query();
 
         foreach ($keys as $key) {
 
