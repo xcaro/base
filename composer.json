@@ -19,6 +19,7 @@
             "email": "reishou90@gmail.com"
         }
     ],
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "Si6\\Base\\": "src/"
