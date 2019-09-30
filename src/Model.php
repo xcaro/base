@@ -5,14 +5,11 @@ namespace Si6\Base;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
 use Illuminate\Support\Facades\Auth;
-use Si6\Base\Utils\HasCriteria;
 use Si6\Base\Utils\UniqueIdentity;
 use Illuminate\Support\Facades\DB;
 
 abstract class Model extends EloquentModel
 {
-    use HasCriteria;
-
     public $incrementing = false;
 
     public $createdBy = false;
