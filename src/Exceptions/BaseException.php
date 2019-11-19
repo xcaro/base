@@ -12,6 +12,8 @@ abstract class BaseException extends Exception
 
     protected $statusCode = 500;
 
+    protected $field = '';
+
     public function __construct(string $message = "")
     {
         parent::__construct($message ?: $this->message, $this->code);
@@ -20,5 +22,15 @@ abstract class BaseException extends Exception
     public function getStatusCode()
     {
         return $this->statusCode;
+    }
+
+    public function setStatusCode($code)
+    {
+        $this->statusCode = $code;
+    }
+
+    public function getField()
+    {
+        return $this->field;
     }
 }

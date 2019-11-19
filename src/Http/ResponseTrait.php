@@ -1,18 +1,25 @@
 <?php
 
-namespace Si6\Base\Traits;
+namespace Si6\Base\Http;
 
+use Exception;
 use Illuminate\Http\Response;
 
 trait ResponseTrait
 {
     protected $data = [];
 
+    protected $included = [];
+
     protected $headers = [];
 
     protected $statusCode = 200;
 
     protected $errors = [];
+
+    protected $debug = null;
+
+    protected $dev = null;
 
     public function setData($data)
     {
@@ -28,6 +35,20 @@ trait ResponseTrait
         return $this;
     }
 
+    public function addIncluded(string $key, $data)
+    {
+        $this->included[$key] = $data;
+
+        return $this;
+    }
+
+    public function addDevData(string $key, $data)
+    {
+        $this->dev[$key] = $data;
+
+        return $this;
+    }
+
     public function addArrayData(array $data)
     {
         foreach ($data as $key => $value) {
@@ -37,8 +58,27 @@ trait ResponseTrait
         return $this;
     }
 
+    protected function setDebug(Exception $exception)
+    {
+        $this->debug = [
+            'message' => $exception->getMessage(),
+            'code'    => $exception->getCode(),
+            'file'    => $exception->getFile(),
+            'line'    => $exception->getLine(),
+            'trace'   => $exception->getTraceAsString(),
+        ];
+    }
+
+    protected function handleMessage($message)
+    {
+        // You can override this function to custom message
+        return $message;
+    }
+
     public function addError($key, $message)
     {
+        $message = $this->handleMessage($message);
+
         $error['message'] = $message;
 
         if ($key) {
@@ -49,12 +89,19 @@ trait ResponseTrait
 
         return $this;
     }
-    
+
     public function addErrors($errors)
     {
         foreach ($errors as $key => $value) {
             $this->addError($key, $value);
         }
+
+        return $this;
+    }
+
+    public function setErrors($errors)
+    {
+        $this->errors = $errors;
 
         return $this;
     }
@@ -110,6 +157,18 @@ trait ResponseTrait
             $response['errors'] = $this->errors;
         } else {
             $response['data'] = $this->data;
+            if (!empty($this->included)) {
+                $response['included'] = $this->included;
+            }
+        }
+
+        if (app()->environment(['local', 'dev'])) {
+            if ($this->debug) {
+                $response['debug'] = $this->debug;
+            }
+            if ($this->dev) {
+                $response['dev'] = $this->dev;
+            }
         }
 
         return response()->json($response, $this->statusCode, $this->headers);

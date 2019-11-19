@@ -1,10 +1,16 @@
 {
-    "name": "si6/base",
+    "name": "si6/base-rest-framework",
     "description": "SI6 package base.",
     "require": {
-        "php": ">=7.1",
-        "bensampo/laravel-enum": "^1.0@dev",
-        "illuminate/support": "5.8.*"
+        "php": "^7.2",
+        "fideloper/proxy": "^4.0",
+        "laravel/framework": "^6.0",
+        "laravel/tinker": "^1.0",
+        "guzzlehttp/guzzle": "^6.3",
+        "bensampo/laravel-enum": "^1.26",
+        "elasticsearch/elasticsearch": "^7.2",
+        "aws/aws-sdk-php": "^3.112",
+        "league/flysystem-aws-s3-v3": "^1.0"
     },
     "license": "MIT",
     "authors": [
@@ -14,12 +20,16 @@
         }
     ],
     "minimum-stability": "dev",
-    "require-dev": {
-
-    },
     "autoload": {
         "psr-4": {
             "Si6\\Base\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Si6\\Base\\Providers\\Si6BaseServiceProvider"
+            ]
         }
     }
 }
